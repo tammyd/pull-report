@@ -14,3 +14,5 @@ dist
 build
 */build
 coverage
+
+.idea/

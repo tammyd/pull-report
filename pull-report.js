@@ -65,6 +65,9 @@ var getItems = function (opts, callback) {
           function (typeCb) {
             if (!opts.pullRequests) { return typeCb(); }
 
+            //skip this repo?
+            if (opts.repos && !_.contains(opts.repos, repo.name)) { return typeCb(); }
+
             github.pullRequests.getAll({
               user: opts.org,
               repo: repo.name,
@@ -83,6 +86,9 @@ var getItems = function (opts, callback) {
           // Type: Issues
           function (typeCb) {
             if (!opts.issues) { return typeCb(); }
+
+            //skip this repo?
+            if (opts.repos && !_.contains(opts.repos, repo.name)) { return typeCb(); }
 
             github.issues.repoIssues({
               user: opts.org,
@@ -194,6 +200,7 @@ if (require.main === module) {
 
     .option("-o, --org [orgs]", "Comma-separated list of 1+ organizations", list)
     .option("-u, --user [users]", "Comma-separated list of 0+ users", list)
+    .option("-r, --repo [repos]", "Comma-separated list of 0+ repos to filter against. Must be in specified org(s)", list)
     .option("-H, --host <name>", "GitHub Enterprise API host URL")
     .option("-s, --state <state>", "State of issues (default: open)", "open")
     .option("-i, --insecure", "Allow unauthorized TLS (for proxies)", false)
@@ -331,7 +338,8 @@ if (require.main === module) {
       pullRequests: program.issueType.indexOf("pull-request") > NOT_FOUND,
       issues: program.issueType.indexOf("issue") > NOT_FOUND,
       users: program.user,
-      state: program.state
+      state: program.state,
+      repos: program.repo
     }, cb);
   }, function (err, results) {
     if (err) { throw err; }
