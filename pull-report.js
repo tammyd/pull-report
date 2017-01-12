@@ -7,7 +7,6 @@
 var fs = require("fs");
 var path = require("path");
 var pkg = require("./package.json");
-var sleep = require('sleep-promise');
 
 var _ = require("underscore");
 var async = require("async");
@@ -44,11 +43,10 @@ try {
 var getItems = function (opts, callback) {
   // Actions.
   async.auto({
-
     repos: function(repoCb) {
       //this is shitty - it should loop until done, but for now it'll do
       async.concatSeries(
-        _.range(1, 10) ,
+        _.range(1, 10),
         function(page,cb) {
 
             github.repos.getFromOrg({
@@ -57,20 +55,13 @@ var getItems = function (opts, callback) {
               per_page: 100, // eslint-disable-line camelcase
               page: page
             }, function(e,r) {
-              sleep(500).then(function() {
                 cb(e,r)
-              });
-
-
             });
         },
         function(err, files) {
           repoCb(err, files)
         });
-
-
     },
-
 
     items: ["repos", function (cb, results) {
       var repos = _.chain(results.repos)
@@ -201,7 +192,6 @@ var getItems = function (opts, callback) {
     callback(null, {
       org: opts.org,
       orgUrl: orgUrl,
-      foundRepos: Object.keys(results.items).length,
       repos: repos
     });
   });
