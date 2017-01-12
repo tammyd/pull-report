@@ -1,0 +1,8 @@
+
+*Open Pull Requests*
+
+{{~#each this~}}{{~#each repos}}
+*{{../org}}:{{name}}* ({{items.length}}){{#each items}}
+- [{{user}}] {{title}} {{#if url}}({{url}}){{/if}}{{/each}}
+{{/each~}}{{/each~}}
+
